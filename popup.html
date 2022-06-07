@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>LeetCode Follow</title>
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.css"
+      rel="stylesheet"
+    />
+    <!-- MDB -->
+    <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.js"
+    ></script>
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script> -->
+  </head>
+  <body style="background-color: lightyellow">
+    <dev class="container">
+      <center>
+      <dev class="row">
+        <h4>LeetCode Subscribtion</h4>
+      </dev>
+      </center>
+      <dev class="container">
+        <dev class="container d-flex flex-row-reverse">
+          <dev class="form-outline">
+            <input type="text" id="add-user-input" class="form form-sm" />
+            <label class="form-label" for="add-user-input"></label>
+            <button type="submit" class="btn btn-light btn-sm" id="add-user-btn">Add</button>
+          </dev>
+        </dev>
+      </dev>
+      <dev class="container">
+        <table id="table" class="table table-striped">
+          <thead><tr>
+            <th scope="col" data-field="user">User</th>
+            <th scope="col" data-field="totalSolved">Total</th>
+            <th scope="col" data-field="hardSolved" style="color: #d9534f;">Hard</th>
+            <th scope="col" data-field="mediumSolved" style="color: #f0ad4e;">Medium</th>
+            <th scope="col" data-field="easySolved" style="color: #5cb85c;">Easy</th>
+            <th scope="col">#</th>
+          </tr></thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </dev>
+    </dev>
+    <script src="popup.js"></script>
+  </body>
+</html>
