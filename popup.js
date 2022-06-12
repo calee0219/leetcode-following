@@ -9,9 +9,11 @@ async function set_to_ls(users) {
     });
 }
 async function enter_user(user) {
-    console.log(user);
     await chrome.storage.sync.get('lc_users', (items) => {
-        var users = items.lc_users;
+        var users = [];
+        if (typeof items.lc_users !== 'undefined') {
+            users.push(...items.lc_users);
+        }
         if (!users.includes(user)) {
             users.push(user);
             set_to_ls(users);
@@ -75,14 +77,17 @@ function render_table_row(user) {
 
 document.getElementById('add-user-btn').addEventListener('click', (event) => {
     var input = document.getElementById('add-user-input');
-    console.log(input.value);
     enter_user(input.value);
     input.value = "";
 });
 
 $(document).ready(function(){
     chrome.storage.sync.get(['lc_users'], function(items) {
-        for (const user of items.lc_users) {
+        var users = [];
+        if (typeof items.lc_users !== 'undefined') {
+            users.push(...items.lc_users);
+        }
+        for (const user of users) {
             render_table_row(user);
         }
     });
