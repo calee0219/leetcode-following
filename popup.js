@@ -45,7 +45,11 @@ function render_table_row(user) {
             row = document.createElement("tr");
             row.setAttribute("id", user);
             c0 = document.createElement("td");
-            c0.textContent = user;
+            a = document.createElement("a");
+            a.textContent = user;
+            a.href = "https://leetcode.com/".concat(user);
+            a.target = "_blank";
+            c0.appendChild(a);
             row.appendChild(c0);
             c1 = document.createElement("td");
             c1.textContent = jsdata.totalSolved;
