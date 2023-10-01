@@ -1,98 +1,120 @@
+// popup.js
 
-let lc_api = 'https://leetcode-stats-api.herokuapp.com/';
+const lc_api = 'https://leetcode-stats-api.herokuapp.com/';
 
-async function set_to_ls(users) {
-    var obj = {'lc_users': []};
-    obj.lc_users = users;
-    //console.log(users);
-    chrome.storage.sync.set(obj, function() {
-    });
-}
-async function enter_user(user) {
-    await chrome.storage.sync.get('lc_users', (items) => {
-        var users = [];
-        if (typeof items.lc_users !== 'undefined') {
-            users.push(...items.lc_users);
-        }
-        if (!users.includes(user)) {
-            users.push(user);
-            set_to_ls(users);
-            render_table_row(user);
-        }
-    });
-}
+document.getElementById('add-user-btn').addEventListener('click', () => {
+  const input = document.getElementById('add-user-input').value;
+  if(input){
+    fetch(lc_api + input).then((rsp) => rsp.json())
+    .then((jsdata) => {
+      if(jsdata.status === "error"){
 
-function delete_user(event) {
-    var user = event.target.getAttribute('data-field');
-    console.log("DELETE: " + user);
-    chrome.storage.sync.get('lc_users', (items) => { 
-        //var users = items.lc_users.filter(e => e !== user);
-        var users = items.lc_users;
-        if (users.includes(user)) {
-            users = users.filter(e => e !== user);
-            set_to_ls(users);
-            document.getElementById(user).remove();
-        }
-    });
-}
+        throw new Error("Invalid username")
+      } else{
+        enterUser(input, jsdata);
 
-function render_table_row(user) {
-    var table = document.getElementById('tableBody');
-    fetch(lc_api + user)
-    .then(rsp => rsp.json())
-    .then(jsdata => { 
-        $(function () {
-            row = document.createElement("tr");
-            row.setAttribute("id", user);
-            c0 = document.createElement("td");
-            a = document.createElement("a");
-            a.textContent = user;
-            a.href = "https://leetcode.com/".concat(user);
-            a.target = "_blank";
-            c0.appendChild(a);
-            row.appendChild(c0);
-            c1 = document.createElement("td");
-            c1.textContent = jsdata.totalSolved;
-            row.appendChild(c1);
-            c2 = document.createElement("td");
-            c2.textContent = jsdata.hardSolved;
-            row.appendChild(c2);
-            c3 = document.createElement("td");
-            c3.textContent = jsdata.mediumSolved;
-            row.appendChild(c3);
-            c4 = document.createElement("td");
-            c4.textContent = jsdata.easySolved;
-            row.appendChild(c4);
-            c5 = document.createElement("td");
-            let btn = document.createElement("button");
-            btn.innerHTML = "Delete";
-            btn.classList.add("btn", "btn-danger", "btn-sm", "btn-rounded", "delete-btn");
-            btn.setAttribute("data-field", user);
-            btn.setAttribute("type", "button");
-            btn.onclick = delete_user;
-            c5.appendChild(btn);
-            row.appendChild(c5);
+      }
 
-            table.appendChild(row);
-        });
+    }).catch((err)=>{
+      window.alert(err.message)
     })
-    .catch(err => { throw err; });
-}
-
-document.getElementById('add-user-btn').addEventListener('click', (event) => {
-    var input = document.getElementById('add-user-input');
-    enter_user(input.value);
-    input.value = "";
+  }else{
+    window.alert("Please enter valid username");
+  }
+  document.getElementById('add-user-input').value = '';
 });
 
-$(document).ready(function(){
-    chrome.storage.sync.get(['lc_users'], function(items) {
-        var users = [];
-        if (typeof items.lc_users !== 'undefined') {
-            users.push(...items.lc_users);
-        }
-        for (const user of users) {
-            render_table_row(user);
-        }
+function enterUser(user, jsdata) {
+  chrome.storage.sync.get('lc_users', ({ lc_users }) => {
+    const users = lc_users || [];
+    if (!users.includes(user)) {
+      users.push(user);
+      chrome.storage.sync.set({ lc_users: users });
+
+      createRow(user, jsdata);
+
+      
+    }
+  });
+}
+
+function createRow(user, jsdata){
+  const table = document.getElementById('tableBody');
+  const row = document.createElement('tr');
+        row.setAttribute('id', user);
+        
+        const c0 = document.createElement('td');
+        const a = document.createElement('a');
+        a.textContent = user;
+        a.href = `https://leetcode.com/${user}`;
+        a.target = '_blank';
+        c0.appendChild(a);
+        row.appendChild(c0);
+        
+        const c1 = document.createElement('td');
+        c1.textContent = jsdata.totalSolved;
+        row.appendChild(c1);
+        
+        const c2 = document.createElement('td');
+        c2.textContent = jsdata.hardSolved;
+        row.appendChild(c2);
+        
+        const c3 = document.createElement('td');
+        c3.textContent = jsdata.mediumSolved;
+        row.appendChild(c3);
+        
+        const c4 = document.createElement('td');
+        c4.textContent = jsdata.easySolved;
+        row.appendChild(c4);
+        
+        const c5 = document.createElement('td');
+        const btn = document.createElement('button');
+        btn.innerHTML = 'Delete';
+        btn.classList.add('btn', 'btn-danger', 'btn-sm', 'btn-rounded', 'delete-btn');
+        btn.setAttribute('data-field', user);
+        btn.setAttribute('type', 'button');
+        btn.onclick = () => delete_user(user);
+        c5.appendChild(btn);
+        row.appendChild(c5);
+        
+        table.appendChild(row);
+}
+
+function delete_user(user) {
+  chrome.storage.sync.get('lc_users', ({ lc_users }) => {
+    const users = lc_users || [];
+    if (users.includes(user)) {
+      const updatedUsers = users.filter((e) => e !== user);
+      chrome.storage.sync.set({ lc_users: updatedUsers });
+      const elementToRemove = document.getElementById(user);
+      if (elementToRemove) {
+        elementToRemove.remove();
+      }
+    }
+  });
+}
+
+function renderTableRow(user) {
+  
+  fetch(lc_api + user)
+    .then((rsp) => rsp.json())
+    .then((jsdata) => {
+        createRow(user, jsdata)
+      
+      })
+    .catch((err) => {
+      window.alert(err.message);
     });
+}
+
+
+chrome.storage?.sync.get(['lc_users'], ({ lc_users }) => {
+  const users = lc_users || [];
+  console.log(users)
+  if(users.length!==0){
+    for (const user of users) {
+      renderTableRow(user);
+    }
+
+  }
 });
