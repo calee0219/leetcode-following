@@ -21,4 +21,4 @@ Input your friend's LeetCode ID with `ADD` buttom. Or delete users if you want.
 
 - The api is using by third-party from [JeremyTsaii/leetcode-stats-api](https://github.com/JeremyTsaii/leetcode-stats-api) but not using the original API from LeetCode because I don't know how to deal with CSRF.
 - The Chrome extension uses local storage to store user data, but please note that local storage does not guarantee permanent storage of this data.
-- The extension will query API every when we view it. There may be improve by some cacheing method.
+- The extension will query API every when we view it. It can be improved by using some caching method.
